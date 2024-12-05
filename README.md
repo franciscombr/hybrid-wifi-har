@@ -1,0 +1,2 @@
+### Project overview
+This project focuses on using Wi-Fi Channel State Information (CSI) for Human Activity Recognition (HAR). The goal is to preprocess CSI data, extract robust features, and classify human activities using state-of-the-art machine learning and deep learning techniques. The project uses the publicly available UT-HAR dataset, which includes 7 distinct activities captured in a controlled indoor environment.
