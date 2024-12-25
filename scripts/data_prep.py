@@ -7,6 +7,7 @@ from collections import defaultdict
 import torch
 import h5py
 import argparse
+from collections import Counter
 
 
 def extract_keys(input_files, annotation_files):
@@ -56,7 +57,7 @@ def create_dataset(input_path, annotation_path):
     #create vector that will store the labels
     data = []
     labels = []
-    idx = 0
+
     for capture, files in file_associations.items():
         input_file = files["input"]
         annotation_file = files["annotation"]
@@ -77,17 +78,58 @@ def create_dataset(input_path, annotation_path):
         # Ignore the first column (timestamps) in input file
         input_data = input_data[:, 1:]
 
-        # Iterate over rows and filter based on annotation
-        capture_data = [] 
-        capture_labels = []
-        for i in range(annotation_data.shape[0]):
-            #if annotation_data[i] != 'NoActivity':  # Assume the first column in annotation contains labels
-            capture_data.append(torch.tensor(input_data[i,:],dtype=torch.float32))
-            capture_labels.append(torch.tensor(label_encoder[annotation_data[i]],dtype=torch.long))
-        data.append(torch.stack(capture_data)) 
-        labels.append(torch.stack(capture_labels))
+        # Downsample to 100Hz using a moving average sliding window for data
+        # and majority voting for annotations
+        window_size = 10  # Corresponds to 1000Hz -> 100Hz
+        input_data_downsampled = []
+        annotation_data_downsampled = []
+
+        for i in range(0, input_data.shape[0], window_size):
+            # Downsample data by averaging
+            window_data = input_data[i:i + window_size]
+            if len(window_data) < window_size:
+                break  # Skip incomplete windows
+            input_data_downsampled.append(np.mean(window_data, axis=0))
+            
+            # Select the annotation by majority voting within the window
+            window_labels = annotation_data[i:i + window_size]
+            label_counts = Counter(window_labels)
+            most_common_label, _ = label_counts.most_common(1)[0]
+            annotation_data_downsampled.append(most_common_label)
+
+        input_data_downsampled = np.array(input_data_downsampled)
+        annotation_data_downsampled = np.array(annotation_data_downsampled)
+
+        #Free unused memory
+        del input_data, annotation_data
+
+        # Group data into frames with 10 time slices
+        frame_size = 10  # 10 time slices
+        num_frames = input_data_downsampled.shape[0] // frame_size
 
 
+        for i in range(num_frames):
+            frame_start = i*frame_size
+            frame_end = frame_start + frame_size
+
+            #Extract frame data and annotations
+            frame_data = input_data_downsampled[frame_start:frame_end]
+            frame_labels = annotation_data_downsampled[frame_start:frame_end]
+
+            #Determine the frame label (majority vote)
+            frame_label = label_encoder[
+                max(set(frame_labels), key=frame_labels.tolist().count)
+            ]
+
+            data.append(torch.tensor(frame_data, dtype=torch.float32))
+            labels.append(torch.tensor(frame_label, dtype=torch.uint8))
+        
+        # Free memory after processing the capture
+        del input_data_downsampled, annotation_data_downsampled
+
+    data = torch.stack(data, dim=0)
+    labels = torch.stack(labels, dim=0)
+    
     return data, labels
 
 
@@ -141,20 +183,20 @@ def main(args):
 
     data, labels = create_dataset(input_path, annotation_path)
 
-    padded_data, padded_labels = pad_to_3d(data, labels)
+    #padded_data, padded_labels = pad_to_3d(data, labels)
 
-    csi_ratio_padded_data = cvt_to_csi_ratio(padded_data)
+    csi_ratio_padded_data = cvt_to_csi_ratio(data)
    
     # Save the results to the specified output files
     with h5py.File(args.output_data_path, "w") as f:
-        f.create_dataset("X", data=padded_data)
+        f.create_dataset("X", data=data)
     with h5py.File(args.output_labels_path, "w") as f:
-        f.create_dataset("y", data=padded_labels)
+        f.create_dataset("y", data=labels)
 
     with h5py.File(args.output_csi_ratio_data_path, "w") as f:
         f.create_dataset("X", data=csi_ratio_padded_data)
     with h5py.File(args.output_csi_ratio_labels_path, "w") as f:
-        f.create_dataset("y", data=padded_labels)
+        f.create_dataset("y", data=labels)
 
 if __name__ == "__main__":
     # Set up argument parser

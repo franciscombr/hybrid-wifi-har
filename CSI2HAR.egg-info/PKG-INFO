@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: CSI2HAR
+Version: 0.0.1
+Summary: Package to do human activity recognition from WiFi CSI data.
+Author: Francisco M. Ribeiro
+Author-email: francisco.m.ribeiro@inesctec.pt
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+### Project overview
+This project focuses on using Wi-Fi Channel State Information (CSI) for Human Activity Recognition (HAR). The goal is to preprocess CSI data, extract robust features, and classify human activities using state-of-the-art machine learning and deep learning techniques. The project uses the publicly available UT-HAR dataset, which includes 7 distinct activities captured in a controlled indoor environment.

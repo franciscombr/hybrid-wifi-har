@@ -1,0 +1,16 @@
+name: CSI2HAR
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.10
+  - pip
+  - pytorch
+  - cudatoolkit=11.8  # Specify the version of CUDA compatible with your GPU
+  - torchvision
+  - torchaudio
+  - numpy
+  - scikit-learn
+  - pip:
+      - matplotlib
+      - h5py

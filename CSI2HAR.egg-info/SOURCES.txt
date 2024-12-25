@@ -1,0 +1,17 @@
+README.md
+setup.py
+CSI2HAR.egg-info/PKG-INFO
+CSI2HAR.egg-info/SOURCES.txt
+CSI2HAR.egg-info/dependency_links.txt
+CSI2HAR.egg-info/top_level.txt
+notebooks/__init__.py
+scripts/__init__.py
+scripts/data_prep.py
+scripts/train_model.py
+src/__init__.py
+src/csi2features.py
+src/prep_input.py
+src/csi2har/__init__.py
+src/csi2har/csi2har_arch01.py
+src/ut_har/__init__.py
+src/ut_har/ut_har.py

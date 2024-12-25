@@ -2,6 +2,7 @@ import argparse
 import datetime
 import torch
 import time
+import numpy as np
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
 
@@ -11,7 +12,7 @@ from src.ut_har.ut_har import make_dataset, make_dataloader
 #      HELPER FUNCTIONS
 #
 ###############################
-
+#TODO: change model parameters to be saved according to model architecture
 def save_checkpoint(model, optimizer, epoch, loss, checkpoint_dir, name_model="default"):
     """
     Save a checkpoint of the model state, optimizer state, epoch, and loss.
@@ -42,6 +43,7 @@ def save_checkpoint(model, optimizer, epoch, loss, checkpoint_dir, name_model="d
 #      TRAINING AND TESTING FUNCTIONS
 #
 ########################################
+#TODO: change model parameters to be saved according to model architecture
 def print_model_settings(model):
     """
     Prints a summary of the model settings.
@@ -74,31 +76,22 @@ def train_epoch(model, device, dataloader, loss_fn, optimizer, epoch):
     # Get the total number of batches for progress tracking
     total_batches = len(dataloader)
 
-    for batch_idx, batch in enumerate(dataloader):
+    for X, y in dataloader:
         # Extract inputs and outputs from the batch
-        wifi_csi_frame = batch['input_wifi-csi'].to(device)  # Input data
-        gt_point_cloud = batch['input_lidar'].to(device)
-
-        # Data normalization
-        wifi_csi_frame = (wifi_csi_frame - wifi_csi_frame.mean()) / wifi_csi_frame.std()
-        gt_point_cloud = (gt_point_cloud - gt_point_cloud.mean()) / gt_point_cloud.std()
-        # gt_point_cloud = normalize_point_cloud(gt_point_cloud)
+        wifi_csi_frame = X.to(device)  # Input data
+        label = y.to(device)
 
         # Zero the parameter gradients
         optimizer.zero_grad()
 
-        pred_point_cloud, trans_feat = model(wifi_csi_frame) 
-        loss = loss_fn(pred_point_cloud, gt_point_cloud, trans_feat)
+        outputs = model(wifi_csi_frame) 
+        loss = loss_fn(outputs,label)
 
         loss.backward()
         optimizer.step()
 
         # Record loss
         train_loss.append(loss.item())
-
-        # Print the progress for each batch
-        if (batch_idx + 1) % 20 == 0:
-            print(f"     - Epoch [{epoch + 1}], Batch [{batch_idx + 1}/{total_batches}], Loss: {loss.item():.6f}")
 
     # Compute and print the average loss for the epoch
     avg_loss = np.mean(train_loss)
@@ -111,35 +104,17 @@ def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validati
     model.eval()
     val_loss = []
     with torch.no_grad():
-        for batch_idx, batch in enumerate(dataloader):
+        for X,y in dataloader:
             # Extract inputs and outputs from the batch
-            wifi_csi_frame = batch['input_wifi-csi'].to(device)
-            gt_point_cloud = batch['input_lidar'].to(device)
-
-            wifi_csi_frame = (wifi_csi_frame - wifi_csi_frame.mean()) / wifi_csi_frame.std()
-            gt_point_cloud = (gt_point_cloud - gt_point_cloud.mean()) / gt_point_cloud.std()
-            # gt_point_cloud = normalize_point_cloud(gt_point_cloud)
+            wifi_csi_frame = X.to(device)
+            label = y.to(device)
 
             # Forward pass
-            pred_point_cloud, trans_feat = model(wifi_csi_frame)
+            outputs = model(wifi_csi_frame)
 
             # Compute loss
-            loss = loss_fn(pred_point_cloud, gt_point_cloud, trans_feat)
+            loss = loss_fn(outputs, label)
             val_loss.append(loss.item())
-
-            # Visualize results for the first batch (or modify as needed)
-            if visualize and epoch % 5 == 0:
-                for frame_idx in range(wifi_csi_frame.size(0)):
-                    if frame_idx % 10 == 0:
-                        subject = batch['subject'][frame_idx]
-                        scene = batch['scene'][frame_idx]
-                        action = batch['action'][frame_idx]
-                        print(f"     >> Saving: Frame {frame_idx} in batch {batch_idx}/{len(dataloader)}. Other info: {subject} {scene} {action}")
-                        gt_lidar_frame = gt_point_cloud[frame_idx].cpu().numpy()  # First frame of the batch
-                        pred_lidar_frame = pred_point_cloud[frame_idx].cpu().numpy()  # First predicted frame of the batch
-
-                        visualize_point_clouds(gt_lidar_frame, pred_lidar_frame, frame_index=frame_idx,
-                                               subject=batch['subject'][frame_idx], scene=batch['scene'][frame_idx], action=batch['action'][frame_idx])
 
     avg_loss = np.mean(val_loss)
     print(f"     >> {dataset_type} loss: {avg_loss:.6f}")
@@ -149,7 +124,7 @@ def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validati
 def main(args):
     print('\n')
     print('*******************************************************************************')
-    print('*           Starting to train model                                           *')
+    print('*                         Training model                                      *')
     print('*******************************************************************************')
     print('\n')
 
