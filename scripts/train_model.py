@@ -86,7 +86,7 @@ def train_epoch(model, device, dataloader, loss_fn, optimizer, epoch):
         outputs = model(wifi_csi_frame) 
         loss = loss_fn(outputs,label)
         _, predicted = torch.max(outputs,1)
-        acc = (predicted == label).sum()
+        acc = (predicted == label).sum() / predicted.size(0)
         loss.backward()
         optimizer.step()
 
@@ -121,7 +121,7 @@ def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validati
 
             #Compute Accuracy
             _, predicted = torch.max(outputs,1)
-            acc = (outputs == label).sum()
+            acc = (predicted == label).sum() / predicted.size(0)
             val_acc.append(acc.item())
 
     avg_loss = np.mean(val_loss)
@@ -165,6 +165,8 @@ def main(args):
 
     # Initialize model, optimizer, loss function, and device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    print(f"    >> Training in: {device}")
 
     model = CSI2HARModel(
         embedding_dim=256,
