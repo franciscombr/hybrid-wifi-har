@@ -3,6 +3,7 @@ import datetime
 import torch
 import time
 import numpy as np
+import wandb
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from src.csi2har.csi2har_arch01 import CSI2HARModel
@@ -131,6 +132,24 @@ def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validati
 
 
 def main(args):
+    # Initialize WandB
+    wandb.init(
+        project="HAR-CSI2",
+        config={
+            "dataset_root": args.dataset_root,
+            "batch_size": args.batch_size,
+            "learning_rate": 1e-4,
+            "optimizer": "NAdam",
+            "num_epochs": args.num_epochs,
+            "embedding_dim": 256,
+            "num_heads": 4,
+            "num_encoder_layers": 3,
+            "num_classes": 8,
+        },
+        name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    )
+    config = wandb.config  # Access hyperparameters
+
     print('\n')
     print('*******************************************************************************')
     print('*                         Training model                                      *')
@@ -212,6 +231,14 @@ def main(args):
         current_lr = optimizer.param_groups[0]['lr']
         print(f"    >> Learning Rate after epoch {epoch + 1}: {current_lr:.6e}")
 
+        #Log training metrics
+        wandb.log({
+            "epoch": epoch + 1,
+            "train_loss": train_loss,
+            "train_acc": train_acc,
+            "learning_rate": current_lr
+        })
+
         # Validation
         val_loss, val_acc = test_epoch(
             model=model,
@@ -222,6 +249,12 @@ def main(args):
             dataset_type="Validation",
             visualize=True
         )
+
+        # Log validation metrics to WandB
+        wandb.log({
+            "val_loss": val_loss,
+            "val_acc": val_acc,
+        })
 
         # Record losses
         history_da['train_loss'].append(train_loss)
