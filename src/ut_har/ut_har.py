@@ -28,8 +28,19 @@ def load_data(dataset_path):
 def make_dataset(dataset_path, normalize, val_split, test_split):
     X, y = load_data(dataset_path)
    
-    X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size=test_split, stratify=y, random_state=42)
-    X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size=val_split, stratify=y_train_val, random_state=42)
+    if test_split > 0:
+        # Split into train+val and test sets
+        X_train_val, X_test, y_train_val, y_test = train_test_split(
+            X, y, test_size=test_split, stratify=y, random_state=42
+        )
+    else:
+        # Assign all data to train+val, no test split
+        X_train_val, X_test, y_train_val, y_test = X, None, y, None
+    
+    # Further split train+val into train and val sets
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_train_val, y_train_val, test_size=val_split, stratify=y_train_val, random_state=42
+    )
     
     if normalize:
         global_mean = X_train.mean(dim=(0,1))
