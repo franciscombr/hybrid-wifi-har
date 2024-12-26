@@ -294,8 +294,10 @@ if __name__ == '__main__':
                         help="Percentage of data to be used for validation")
     parser.add_argument("--normalize", action="store_true", 
                         help="Choose to normalize the data to zero mean and unit variance")
-    parser.add_argument("--batch_size", type=int, required=True,
+    parser.add_argument("--batch_size_train", type=int, required=True,
                         help="Choose an adequate batch size for model training.")
+    parser.add_argument("--batch_size_val", type=int, required=True,
+                        help="Choose an adequate batch size for model validation.")
     parser.add_argument("--num_epochs", type=float, default=30, 
                         help="Choose number of epochs for model training")
     
