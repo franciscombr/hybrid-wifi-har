@@ -1,0 +1,239 @@
+
+
+*******************************************************************************
+*                         Training model                                      *
+*******************************************************************************
+
+
+  * Date: 26-Dec-2024_(13:18:39)
+  * Dataset path: /nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_OG
+[TRAINING]
+    >> Train set samples: 1155. Batch size: 24
+    >> Test set samples: 1155
+    >> Selected data split: 0.5
+    >> Training in: cuda
+[Model Settings Summary]
+----------------------------------------
+  * Embedding Dimension           : 256
+  * Number of Antennas            : 3
+  * Number of Subcarriers         : 30
+  * Number of Time Slices         : 10
+  * Number of Heads               : 4
+----------------------------------------
+    >> EPOCH 1/30
+     - Epoch [1] >> Average Training Loss: 0.773290 | Average Training Accuracy: 0.810426
+    >> Learning Rate after epoch 1: 1.000000e-04
+     >> Validation loss: 0.685464 | acc: 0.816558
+    >> EPOCH 1/30 	 train loss 0.773290 	 train_acc 0.810426 	 val loss 0.685464 	 val acc 0.816558
+     >> Checkpoint saved at: ../results/models/checkpoints/checkpoint_epoch_1_arch01_v1_001.pth
+    >> Consumed time in Epoch 1: 36.46 seconds 
+
+    >> EPOCH 2/30
+     - Epoch [2] >> Average Training Loss: 0.654821 | Average Training Accuracy: 0.816234
+    >> Learning Rate after epoch 2: 1.000000e-04
+     >> Validation loss: 0.826648 | acc: 0.709921
+    >> EPOCH 2/30 	 train loss 0.654821 	 train_acc 0.816234 	 val loss 0.826648 	 val acc 0.709921
+    >> Consumed time in Epoch 2: 35.56 seconds 
+
+    >> EPOCH 3/30
+     - Epoch [3] >> Average Training Loss: 0.558170 | Average Training Accuracy: 0.831818
+    >> Learning Rate after epoch 3: 1.000000e-04
+     >> Validation loss: 0.632408 | acc: 0.822367
+    >> EPOCH 3/30 	 train loss 0.558170 	 train_acc 0.831818 	 val loss 0.632408 	 val acc 0.822367
+    >> Consumed time in Epoch 3: 35.77 seconds 
+
+    >> EPOCH 4/30
+     - Epoch [4] >> Average Training Loss: 0.485065 | Average Training Accuracy: 0.848557
+    >> Learning Rate after epoch 4: 1.000000e-04
+     >> Validation loss: 1.060234 | acc: 0.588709
+    >> EPOCH 4/30 	 train loss 0.485065 	 train_acc 0.848557 	 val loss 1.060234 	 val acc 0.588709
+    >> Consumed time in Epoch 4: 35.91 seconds 
+
+    >> EPOCH 5/30
+     - Epoch [5] >> Average Training Loss: 0.444020 | Average Training Accuracy: 0.860498
+    >> Learning Rate after epoch 5: 1.000000e-04
+     >> Validation loss: 0.421379 | acc: 0.871645
+    >> EPOCH 5/30 	 train loss 0.444020 	 train_acc 0.860498 	 val loss 0.421379 	 val acc 0.871645
+    >> Consumed time in Epoch 5: 35.90 seconds 
+
+    >> EPOCH 6/30
+     - Epoch [6] >> Average Training Loss: 0.402384 | Average Training Accuracy: 0.872222
+    >> Learning Rate after epoch 6: 1.000000e-04
+     >> Validation loss: 0.422607 | acc: 0.868543
+    >> EPOCH 6/30 	 train loss 0.402384 	 train_acc 0.872222 	 val loss 0.422607 	 val acc 0.868543
+    >> Consumed time in Epoch 6: 36.05 seconds 
+
+    >> EPOCH 7/30
+     - Epoch [7] >> Average Training Loss: 0.380944 | Average Training Accuracy: 0.876263
+    >> Learning Rate after epoch 7: 1.000000e-04
+     >> Validation loss: 0.414348 | acc: 0.866017
+    >> EPOCH 7/30 	 train loss 0.380944 	 train_acc 0.876263 	 val loss 0.414348 	 val acc 0.866017
+    >> Consumed time in Epoch 7: 36.00 seconds 
+
+    >> EPOCH 8/30
+     - Epoch [8] >> Average Training Loss: 0.363588 | Average Training Accuracy: 0.879654
+    >> Learning Rate after epoch 8: 1.000000e-04
+     >> Validation loss: 1.120490 | acc: 0.565621
+    >> EPOCH 8/30 	 train loss 0.363588 	 train_acc 0.879654 	 val loss 1.120490 	 val acc 0.565621
+    >> Consumed time in Epoch 8: 36.04 seconds 
+
+    >> EPOCH 9/30
+     - Epoch [9] >> Average Training Loss: 0.352971 | Average Training Accuracy: 0.883261
+    >> Learning Rate after epoch 9: 1.000000e-04
+     >> Validation loss: 0.441041 | acc: 0.860534
+    >> EPOCH 9/30 	 train loss 0.352971 	 train_acc 0.883261 	 val loss 0.441041 	 val acc 0.860534
+    >> Consumed time in Epoch 9: 36.02 seconds 
+
+    >> EPOCH 10/30
+     - Epoch [10] >> Average Training Loss: 0.339307 | Average Training Accuracy: 0.888925
+    >> Learning Rate after epoch 10: 1.000000e-04
+     >> Validation loss: 0.349650 | acc: 0.887771
+    >> EPOCH 10/30 	 train loss 0.339307 	 train_acc 0.888925 	 val loss 0.349650 	 val acc 0.887771
+    >> Consumed time in Epoch 10: 36.01 seconds 
+
+    >> EPOCH 11/30
+     - Epoch [11] >> Average Training Loss: 0.322372 | Average Training Accuracy: 0.891306
+    >> Learning Rate after epoch 11: 1.000000e-04
+     >> Validation loss: 0.657248 | acc: 0.757035
+    >> EPOCH 11/30 	 train loss 0.322372 	 train_acc 0.891306 	 val loss 0.657248 	 val acc 0.757035
+     >> Checkpoint saved at: ../results/models/checkpoints/checkpoint_epoch_11_arch01_v1_001.pth
+    >> Consumed time in Epoch 11: 36.48 seconds 
+
+    >> EPOCH 12/30
+     - Epoch [12] >> Average Training Loss: 0.312662 | Average Training Accuracy: 0.894553
+    >> Learning Rate after epoch 12: 1.000000e-04
+     >> Validation loss: 0.422898 | acc: 0.853319
+    >> EPOCH 12/30 	 train loss 0.312662 	 train_acc 0.894553 	 val loss 0.422898 	 val acc 0.853319
+    >> Consumed time in Epoch 12: 36.08 seconds 
+
+    >> EPOCH 13/30
+     - Epoch [13] >> Average Training Loss: 0.303465 | Average Training Accuracy: 0.897908
+    >> Learning Rate after epoch 13: 1.000000e-04
+     >> Validation loss: 0.336796 | acc: 0.890693
+    >> EPOCH 13/30 	 train loss 0.303465 	 train_acc 0.897908 	 val loss 0.336796 	 val acc 0.890693
+    >> Consumed time in Epoch 13: 36.00 seconds 
+
+    >> EPOCH 14/30
+     - Epoch [14] >> Average Training Loss: 0.295956 | Average Training Accuracy: 0.898088
+    >> Learning Rate after epoch 14: 1.000000e-04
+     >> Validation loss: 0.382958 | acc: 0.873196
+    >> EPOCH 14/30 	 train loss 0.295956 	 train_acc 0.898088 	 val loss 0.382958 	 val acc 0.873196
+    >> Consumed time in Epoch 14: 36.06 seconds 
+
+    >> EPOCH 15/30
+     - Epoch [15] >> Average Training Loss: 0.286357 | Average Training Accuracy: 0.900938
+    >> Learning Rate after epoch 15: 1.000000e-04
+     >> Validation loss: 0.345161 | acc: 0.891162
+    >> EPOCH 15/30 	 train loss 0.286357 	 train_acc 0.900938 	 val loss 0.345161 	 val acc 0.891162
+    >> Consumed time in Epoch 15: 36.08 seconds 
+
+    >> EPOCH 16/30
+     - Epoch [16] >> Average Training Loss: 0.278831 | Average Training Accuracy: 0.902742
+    >> Learning Rate after epoch 16: 1.000000e-04
+     >> Validation loss: 0.328093 | acc: 0.895599
+    >> EPOCH 16/30 	 train loss 0.278831 	 train_acc 0.902742 	 val loss 0.328093 	 val acc 0.895599
+    >> Consumed time in Epoch 16: 36.08 seconds 
+
+    >> EPOCH 17/30
+     - Epoch [17] >> Average Training Loss: 0.271830 | Average Training Accuracy: 0.906349
+    >> Learning Rate after epoch 17: 1.000000e-04
+     >> Validation loss: 0.393754 | acc: 0.876118
+    >> EPOCH 17/30 	 train loss 0.271830 	 train_acc 0.906349 	 val loss 0.393754 	 val acc 0.876118
+    >> Consumed time in Epoch 17: 36.05 seconds 
+
+    >> EPOCH 18/30
+     - Epoch [18] >> Average Training Loss: 0.266976 | Average Training Accuracy: 0.906854
+    >> Learning Rate after epoch 18: 1.000000e-04
+     >> Validation loss: 0.323441 | acc: 0.894228
+    >> EPOCH 18/30 	 train loss 0.266976 	 train_acc 0.906854 	 val loss 0.323441 	 val acc 0.894228
+    >> Consumed time in Epoch 18: 36.10 seconds 
+
+    >> EPOCH 19/30
+     - Epoch [19] >> Average Training Loss: 0.256396 | Average Training Accuracy: 0.909452
+    >> Learning Rate after epoch 19: 1.000000e-04
+     >> Validation loss: 0.477086 | acc: 0.825433
+    >> EPOCH 19/30 	 train loss 0.256396 	 train_acc 0.909452 	 val loss 0.477086 	 val acc 0.825433
+    >> Consumed time in Epoch 19: 36.13 seconds 
+
+    >> EPOCH 20/30
+     - Epoch [20] >> Average Training Loss: 0.253943 | Average Training Accuracy: 0.911941
+    >> Learning Rate after epoch 20: 5.000000e-05
+     >> Validation loss: 0.313509 | acc: 0.898449
+    >> EPOCH 20/30 	 train loss 0.253943 	 train_acc 0.911941 	 val loss 0.313509 	 val acc 0.898449
+    >> Consumed time in Epoch 20: 36.03 seconds 
+
+    >> EPOCH 21/30
+     - Epoch [21] >> Average Training Loss: 0.204136 | Average Training Accuracy: 0.928608
+    >> Learning Rate after epoch 21: 5.000000e-05
+     >> Validation loss: 0.296625 | acc: 0.907251
+    >> EPOCH 21/30 	 train loss 0.204136 	 train_acc 0.928608 	 val loss 0.296625 	 val acc 0.907251
+     >> Checkpoint saved at: ../results/models/checkpoints/checkpoint_epoch_21_arch01_v1_001.pth
+    >> Consumed time in Epoch 21: 36.69 seconds 
+
+    >> EPOCH 22/30
+     - Epoch [22] >> Average Training Loss: 0.195396 | Average Training Accuracy: 0.931421
+    >> Learning Rate after epoch 22: 5.000000e-05
+     >> Validation loss: 0.293561 | acc: 0.907107
+    >> EPOCH 22/30 	 train loss 0.195396 	 train_acc 0.931421 	 val loss 0.293561 	 val acc 0.907107
+    >> Consumed time in Epoch 22: 36.01 seconds 
+
+    >> EPOCH 23/30
+     - Epoch [23] >> Average Training Loss: 0.190131 | Average Training Accuracy: 0.931963
+    >> Learning Rate after epoch 23: 5.000000e-05
+     >> Validation loss: 0.293260 | acc: 0.902381
+    >> EPOCH 23/30 	 train loss 0.190131 	 train_acc 0.931963 	 val loss 0.293260 	 val acc 0.902381
+    >> Consumed time in Epoch 23: 35.99 seconds 
+
+    >> EPOCH 24/30
+     - Epoch [24] >> Average Training Loss: 0.184920 | Average Training Accuracy: 0.933009
+    >> Learning Rate after epoch 24: 5.000000e-05
+     >> Validation loss: 0.287790 | acc: 0.909596
+    >> EPOCH 24/30 	 train loss 0.184920 	 train_acc 0.933009 	 val loss 0.287790 	 val acc 0.909596
+    >> Consumed time in Epoch 24: 36.10 seconds 
+
+    >> EPOCH 25/30
+     - Epoch [25] >> Average Training Loss: 0.179068 | Average Training Accuracy: 0.935390
+    >> Learning Rate after epoch 25: 5.000000e-05
+     >> Validation loss: 0.294791 | acc: 0.907143
+    >> EPOCH 25/30 	 train loss 0.179068 	 train_acc 0.935390 	 val loss 0.294791 	 val acc 0.907143
+    >> Consumed time in Epoch 25: 36.10 seconds 
+
+    >> EPOCH 26/30
+     - Epoch [26] >> Average Training Loss: 0.170838 | Average Training Accuracy: 0.938059
+    >> Learning Rate after epoch 26: 5.000000e-05
+     >> Validation loss: 0.291067 | acc: 0.908189
+    >> EPOCH 26/30 	 train loss 0.170838 	 train_acc 0.938059 	 val loss 0.291067 	 val acc 0.908189
+    >> Consumed time in Epoch 26: 36.04 seconds 
+
+    >> EPOCH 27/30
+     - Epoch [27] >> Average Training Loss: 0.169044 | Average Training Accuracy: 0.939033
+    >> Learning Rate after epoch 27: 5.000000e-05
+     >> Validation loss: 0.321318 | acc: 0.893074
+    >> EPOCH 27/30 	 train loss 0.169044 	 train_acc 0.939033 	 val loss 0.321318 	 val acc 0.893074
+    >> Consumed time in Epoch 27: 36.02 seconds 
+
+    >> EPOCH 28/30
+     - Epoch [28] >> Average Training Loss: 0.165736 | Average Training Accuracy: 0.939971
+    >> Learning Rate after epoch 28: 5.000000e-05
+     >> Validation loss: 0.294278 | acc: 0.906890
+    >> EPOCH 28/30 	 train loss 0.165736 	 train_acc 0.939971 	 val loss 0.294278 	 val acc 0.906890
+    >> Consumed time in Epoch 28: 36.02 seconds 
+
+    >> EPOCH 29/30
+     - Epoch [29] >> Average Training Loss: 0.157114 | Average Training Accuracy: 0.942857
+    >> Learning Rate after epoch 29: 5.000000e-05
+     >> Validation loss: 0.319289 | acc: 0.902886
+    >> EPOCH 29/30 	 train loss 0.157114 	 train_acc 0.942857 	 val loss 0.319289 	 val acc 0.902886
+    >> Consumed time in Epoch 29: 36.04 seconds 
+
+    >> EPOCH 30/30
+     - Epoch [30] >> Average Training Loss: 0.154868 | Average Training Accuracy: 0.943001
+    >> Learning Rate after epoch 30: 5.000000e-05
+     >> Validation loss: 0.339546 | acc: 0.905195
+    >> EPOCH 30/30 	 train loss 0.154868 	 train_acc 0.943001 	 val loss 0.339546 	 val acc 0.905195
+    >> Consumed time in Epoch 30: 36.08 seconds 
+
+ >> Model saved with name: hybrid_har_model_091024arch01_v1_001_ep30_lr0.0001_NAdam.pth
+Total training time: 18.03 minutes
+[1;34mwandb[0m: 🚀 View run [33mCSI2HAR_2024-12-26_13-18-37[0m at: [34mhttps://wandb.ai/fmribeiro/HAR-CSI2/runs/vc2wspoy[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20241226_131838-vc2wspoy/logs[0m
