@@ -137,7 +137,8 @@ def main(args):
         project="HAR-CSI2",
         config={
             "dataset_root": args.dataset_root,
-            "batch_size": args.batch_size,
+            "batch_size_train": args.batch_size_train,
+            "batch_size_val": args.batch_size_val,
             "learning_rate": 1e-4,
             "optimizer": "NAdam",
             "num_epochs": args.num_epochs,
@@ -168,14 +169,14 @@ def main(args):
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, args.normalize, args.val_split, args.test_split)
 
     rng_generator = torch.manual_seed(42)
-    train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=args.batch_size)
-    val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size)
+    train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=args.batch_size_train)
+    val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
+    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
 
     print(f"[TRAINING]")
-    print(f"    >> Train set samples: {len(train_loader)}. Batch size: {args.batch_size}")
+    print(f"    >> Train set samples: {len(train_loader)}. Batch size: {args.batch_size_train}")
     print(f"    >> Test set samples: {len(val_loader)}")
-    print(f"    >> Selected data split: {args.test_split}")
+    print(f"    >> Selected data split: {args.val_split}")
 
     #############################
     #        MODEL CONFIG       #
