@@ -20,3 +20,6 @@ results/
 
 # Ignore virtual environments
 venv/
+
+# Ignore wandb
+scripts/wandb
