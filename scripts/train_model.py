@@ -5,6 +5,7 @@ import time
 import numpy as np
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
+from src.csi2har.csi2har_arch01 import CSI2HARModel
 
 
 ###############################
@@ -12,7 +13,6 @@ from src.ut_har.ut_har import make_dataset, make_dataloader
 #      HELPER FUNCTIONS
 #
 ###############################
-#TODO: change model parameters to be saved according to model architecture
 def save_checkpoint(model, optimizer, epoch, loss, checkpoint_dir, name_model="default"):
     """
     Save a checkpoint of the model state, optimizer state, epoch, and loss.
@@ -33,7 +33,6 @@ def save_checkpoint(model, optimizer, epoch, loss, checkpoint_dir, name_model="d
         'head_num': model.num_heads,
         'antennas_num': model.num_antennas,
         'subcarriers_num': model.num_subcarriers,
-        'cloud_points_num': model.num_points,
     }, checkpoint_path)
     print(f"     >> Checkpoint saved at: {checkpoint_path}")
 
@@ -43,7 +42,6 @@ def save_checkpoint(model, optimizer, epoch, loss, checkpoint_dir, name_model="d
 #      TRAINING AND TESTING FUNCTIONS
 #
 ########################################
-#TODO: change model parameters to be saved according to model architecture
 def print_model_settings(model):
     """
     Prints a summary of the model settings.
@@ -54,7 +52,6 @@ def print_model_settings(model):
     # Extract settings from the model
     settings = {
         "Embedding Dimension": model.embedding_dim,
-        "Number of Points": model.num_points,
         "Number of Antennas": model.num_antennas,
         "Number of Subcarriers": model.num_subcarriers,
         "Number of Time Slices": model.num_time_slices,
@@ -69,9 +66,11 @@ def print_model_settings(model):
     print("-" * 40)
 
 
+
 def train_epoch(model, device, dataloader, loss_fn, optimizer, epoch):
     model.train()
     train_loss = []
+    train_acc = []
 
     # Get the total number of batches for progress tracking
     total_batches = len(dataloader)
@@ -86,23 +85,27 @@ def train_epoch(model, device, dataloader, loss_fn, optimizer, epoch):
 
         outputs = model(wifi_csi_frame) 
         loss = loss_fn(outputs,label)
-
+        _, predicted = torch.max(outputs,1)
+        acc = (predicted == label).sum()
         loss.backward()
         optimizer.step()
 
         # Record loss
         train_loss.append(loss.item())
+        train_acc.append(acc.item())
 
     # Compute and print the average loss for the epoch
     avg_loss = np.mean(train_loss)
-    print(f"     - Epoch [{epoch + 1}] >> Average Training Loss: {avg_loss:.6f}")
+    avg_acc = np.mean(train_acc)
+    print(f"     - Epoch [{epoch + 1}] >> Average Training Loss: {avg_loss:.6f} | Average Training Accuracy: {avg_acc:.6f}")
 
-    return avg_loss
+    return avg_loss, avg_acc
 
 
 def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validation", visualize=True):
     model.eval()
     val_loss = []
+    val_acc = []
     with torch.no_grad():
         for X,y in dataloader:
             # Extract inputs and outputs from the batch
@@ -116,9 +119,15 @@ def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validati
             loss = loss_fn(outputs, label)
             val_loss.append(loss.item())
 
+            #Compute Accuracy
+            _, predicted = torch.max(outputs,1)
+            acc = (outputs == label).sum()
+            val_acc.append(acc.item())
+
     avg_loss = np.mean(val_loss)
-    print(f"     >> {dataset_type} loss: {avg_loss:.6f}")
-    return avg_loss
+    avg_acc = np.mean(val_acc)
+    print(f"     >> {dataset_type} loss: {avg_loss:.6f} | acc: {avg_acc:.6f}")
+    return avg_loss, avg_acc
 
 
 def main(args):
@@ -140,9 +149,9 @@ def main(args):
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, args.normalize, args.val_split, args.test_split)
 
     rng_generator = torch.manual_seed(42)
-    train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator)
-    val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator)
+    train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=args.batch_size)
+    val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size)
+    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size)
 
     print(f"[TRAINING]")
     print(f"    >> Train set samples: {len(train_loader)}. Batch size: {args.batch_size}")
@@ -157,15 +166,15 @@ def main(args):
     # Initialize model, optimizer, loss function, and device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = CSI2PointCloudModel(
+    model = CSI2HARModel(
         embedding_dim=256,
         num_heads=4,
         num_encoder_layers=3,
         num_decoder_layers=3,
-        num_points=1200,  # Updated to match the fixed number of points
         num_antennas=3,
-        num_subcarriers=114,
-        num_time_slices=10
+        num_subcarriers=30,
+        num_time_slices=10,
+        num_classes=8
     ).to(device)
 
     learnig_rate = 1e-4
@@ -177,7 +186,7 @@ def main(args):
     print_model_settings(model)
 
     num_epochs = args.num_epochs  # Set your desired number of epochs
-    history_da = {'train_loss': [], 'val_loss': []}
+    history_da = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': []}
     t0 = time.time()
 
     for epoch in range(num_epochs):
@@ -185,7 +194,7 @@ def main(args):
         t1 = time.time()
 
         # Training
-        train_loss = train_epoch(
+        train_loss, train_acc = train_epoch(
             model=model,
             device=device,
             dataloader=train_loader,
@@ -202,7 +211,7 @@ def main(args):
         print(f"    >> Learning Rate after epoch {epoch + 1}: {current_lr:.6e}")
 
         # Validation
-        val_loss = test_epoch(
+        val_loss, val_acc = test_epoch(
             model=model,
             device=device,
             dataloader=val_loader,
@@ -215,14 +224,16 @@ def main(args):
         # Record losses
         history_da['train_loss'].append(train_loss)
         history_da['val_loss'].append(val_loss)
+        history_da['train_acc'].append(train_acc)
+        history_da['val_acc'].append(val_acc)
 
         # Print epoch summary
-        print('    >> EPOCH {}/{} \t train loss {:.6f} \t val loss {:.6f}'.format(epoch + 1, num_epochs, train_loss, val_loss))
+        print('    >> EPOCH {}/{} \t train loss {:.6f} \t train_acc {:.6f} \t val loss {:.6f} \t val acc {:.6f}'.format(epoch + 1, num_epochs, train_loss, train_acc, val_loss, val_acc))
 
         # Save checkpoint at the end of each epoch
         model_version = "arch01_v1_001"
         if epoch % 10 == 0:
-            save_checkpoint(model, optimizer, epoch, val_loss, checkpoint_dir="../models/checkpoints/", name_model=model_version)
+            save_checkpoint(model, optimizer, epoch, val_loss, checkpoint_dir="../results/models/checkpoints/", name_model=model_version)
 
         print(f"    >> Consumed time in Epoch {epoch + 1}: {time.time() - t1:.2f} seconds \n")
 
@@ -231,7 +242,7 @@ def main(args):
     if save_model:
         model_version = "arch01_v1_001"
         day_model = "091024"
-        torch.save(model.state_dict(), f"../models/hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
+        torch.save(model.state_dict(), f"../results/models/hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
         print(f" >> Model saved with name: hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
 
     print(f"Total training time: {(time.time() - t0) / 60:.2f} minutes")
@@ -248,11 +259,11 @@ if __name__ == '__main__':
                         help="Percentage of data to be used for validation")
     parser.add_argument("--normalize", action="store_true", 
                         help="Choose to normalize the data to zero mean and unit variance")
-    parser.add_argument("--batch_size", type=float, required=True,
+    parser.add_argument("--batch_size", type=int, required=True,
                         help="Choose an adequate batch size for model training.")
     parser.add_argument("--num_epochs", type=float, default=30, 
                         help="Choose number of epochs for model training")
     
     args = parser.parse_args()
-
+    
     main(args)
