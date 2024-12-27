@@ -226,7 +226,7 @@ def main(args):
         )
 
         # Scheduler step
-        #scheduler.step()
+        scheduler.step()
 
         # Optionally, print the current learning rate
         current_lr = optimizer.param_groups[0]['lr']
