@@ -142,7 +142,7 @@ def main(args):
             "learning_rate": 1e-4,
             "optimizer": "NAdam",
             "num_epochs": args.num_epochs,
-            "embedding_dim": 256,
+            "embedding_dim": args.embedding_dim,
             "num_heads": 4,
             "num_encoder_layers": 3,
             "num_classes": 8,
