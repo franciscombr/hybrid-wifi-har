@@ -27,35 +27,36 @@ def load_data(dataset_path):
 
 def make_dataset(dataset_path, normalize, val_split, test_split):
     X, y = load_data(dataset_path)
-   
+    
     if test_split > 0:
-        # Split into train+val and test sets
+        # Split into training+validation and test datasets
         X_train_val, X_test, y_train_val, y_test = train_test_split(
-            X, y, test_size=test_split, stratify=y, random_state=42
+            X, y, test_size=test_split, stratify=y if len(set(y)) > 1 else None, random_state=42
         )
     else:
-        # Assign all data to train+val, no test split
+        # No test dataset, use the entire data for training and validation
         X_train_val, X_test, y_train_val, y_test = X, None, y, None
     
-    # Further split train+val into train and val sets
+    # Split training+validation dataset into training and validation datasets
     X_train, X_val, y_train, y_val = train_test_split(
-        X_train_val, y_train_val, test_size=val_split, stratify=y_train_val, random_state=42
+        X_train_val, y_train_val, test_size=val_split, stratify=y_train_val if len(set(y_train_val)) > 1 else None, random_state=42
     )
     
     if normalize:
-        global_mean = X_train.mean(dim=(0,1))
-        global_std = X_train.std(dim=(0, 1)) + 1e-6  # Compute std over samples and time, add epsilon to avoid division by zeros
-
+        global_mean = X_train.mean(axis=(0, 1))
+        global_std = X_train.std(axis=(0, 1)) + 1e-6  # Avoid division by zero
+        
         X_train = (X_train - global_mean) / global_std
         X_val = (X_val - global_mean) / global_std
-        X_test = (X_test - global_mean) / global_std
+        if X_test is not None:
+            X_test = (X_test - global_mean) / global_std
     
-    train_dataset = HARData(X_train,y_train)
-    val_dataset = HARData(X_val, y_val)    
-    test_dataset = HARData(X_test, y_test)
-
-
-    return train_dataset, val_dataset, test_dataset 
+    # Create datasets
+    train_dataset = HARData(X_train, y_train)
+    val_dataset = HARData(X_val, y_val)
+    test_dataset = HARData(X_test, y_test) if X_test is not None else None
+    
+    return train_dataset, val_dataset, test_dataset
 
 def make_dataloader(dataset, is_training, batch_size,generator ):
     loader = DataLoader(

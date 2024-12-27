@@ -171,7 +171,7 @@ def main(args):
     rng_generator = torch.manual_seed(42)
     train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=args.batch_size_train)
     val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
+    #test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
 
     print(f"[TRAINING]")
     print(f"    >> Train set samples: {len(train_loader)}. Batch size: {args.batch_size_train}")
