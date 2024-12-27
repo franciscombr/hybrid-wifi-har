@@ -189,7 +189,7 @@ def main(args):
     print(f"    >> Training in: {device}")
 
     model = CSI2HARModel(
-        embedding_dim=256,
+        embedding_dim=args.embedding_dim,
         num_heads=4,
         num_encoder_layers=3,
         num_decoder_layers=3,
@@ -301,7 +301,7 @@ if __name__ == '__main__':
                         help="Choose an adequate batch size for model validation.")
     parser.add_argument("--num_epochs", type=int, default=30, 
                         help="Choose number of epochs for model training")
-    
+    parser.add_argument("--embedding_dim", type=int, default=256)    
     args = parser.parse_args()
     
     main(args)
