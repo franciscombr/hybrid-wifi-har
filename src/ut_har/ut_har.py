@@ -63,6 +63,7 @@ def make_dataloader(dataset, is_training, batch_size,generator ):
         dataset,
         batch_size=batch_size,
         shuffle=is_training,
-        generator=generator
+        generator=generator,
+        drop_last=True
     )
     return loader 
