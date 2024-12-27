@@ -139,7 +139,7 @@ def main(args):
             "dataset_root": args.dataset_root,
             "batch_size_train": args.batch_size_train,
             "batch_size_val": args.batch_size_val,
-            "learning_rate": 1e-4,
+            "learning_rate": args.learning_rate,
             "optimizer": "NAdam",
             "num_epochs": args.num_epochs,
             "embedding_dim": args.embedding_dim,
@@ -199,7 +199,7 @@ def main(args):
         num_classes=8
     ).to(device)
 
-    learnig_rate = 1e-4
+    learnig_rate = args.learning_rate 
     optimizer_name = "NAdam"
     optimizer = torch.optim.NAdam(model.parameters(), lr=learnig_rate)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
@@ -302,6 +302,7 @@ if __name__ == '__main__':
     parser.add_argument("--num_epochs", type=int, default=30, 
                         help="Choose number of epochs for model training")
     parser.add_argument("--embedding_dim", type=int, default=256)    
+    parser.add_argument("--learning_rate", type=float, default=1e-4 )
     args = parser.parse_args()
     
     main(args)
