@@ -226,7 +226,7 @@ def main(args):
         )
 
         # Scheduler step
-        scheduler.step()
+        #scheduler.step()
 
         # Optionally, print the current learning rate
         current_lr = optimizer.param_groups[0]['lr']
@@ -267,7 +267,7 @@ def main(args):
         print('    >> EPOCH {}/{} \t train loss {:.6f} \t train_acc {:.6f} \t val loss {:.6f} \t val acc {:.6f}'.format(epoch + 1, num_epochs, train_loss, train_acc, val_loss, val_acc))
 
         # Save checkpoint at the end of each epoch
-        model_version = "arch01_v1_001"
+        model_version = "arch01_v1_002"
         if epoch % 10 == 0:
             save_checkpoint(model, optimizer, epoch, val_loss, checkpoint_dir="../results/models/checkpoints/", name_model=model_version)
 
@@ -276,7 +276,7 @@ def main(args):
         # Saving the model.
     save_model = True
     if save_model:
-        model_version = "arch01_v1_001"
+        model_version = "arch01_v1_002"
         day_model = "091024"
         torch.save(model.state_dict(), f"../results/models/hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
         print(f" >> Model saved with name: hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
