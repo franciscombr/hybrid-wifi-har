@@ -299,7 +299,7 @@ if __name__ == '__main__':
                         help="Choose an adequate batch size for model training.")
     parser.add_argument("--batch_size_val", type=int, required=True,
                         help="Choose an adequate batch size for model validation.")
-    parser.add_argument("--num_epochs", type=float, default=30, 
+    parser.add_argument("--num_epochs", type=int, default=30, 
                         help="Choose number of epochs for model training")
     
     args = parser.parse_args()
