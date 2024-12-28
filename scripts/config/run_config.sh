@@ -1,0 +1,1 @@
+python3 config_sweep.py --test_split 0.2 --val_split 0.2  --batch_size_val 8 --normalize --dataset_root /nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_OG 
