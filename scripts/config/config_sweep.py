@@ -20,7 +20,7 @@ if __name__ == '__main__':
         'metric': {'name': 'val_acc', 'goal': 'maximize'},
         'parameters': {
             'batch_size_train': {'values': [16, 24,  32, 64]},  # Searchable hyperparameter
-            'learning_rate': {'min': -5, 'max': -3, 'distribution': 'log_uniform'},
+            'learning_rate': {'values': [1e-5, 1e-4, 1e-3]},
             'embedding_dim': {'values': [128, 256, 512]},  # Searchable hyperparameter
             'num_encoder_layers': {'values': [2, 3, 4, 6, 8]},   # Searchable hyperparameter
             'num_epochs': {'value': 50},                   # Fixed value
