@@ -26,8 +26,8 @@ class TemporalEncoder(nn.Module):
     
 
 class CSI2HARModel(nn.Module):
-    def __init__(self, embedding_dim, num_heads, num_encoder_layers, num_decoder_layers, 
-                 num_antennas=3, num_subcarriers=30, num_time_slices=10, num_classes=8):
+    def __init__(self, embedding_dim, num_heads, num_encoder_layers,  
+                 num_antennas=3, num_subcarriers=30, num_time_slices=10, num_classes=8, dropout=0.3):
         super(CSI2HARModel, self).__init__()
         self.embedding_dim = embedding_dim
         self.num_antennas = num_antennas
@@ -49,7 +49,7 @@ class CSI2HARModel(nn.Module):
             nn.Flatten(),            # Flatten for dense layers
             nn.Linear(embedding_dim, 128),  # First dense layer with reduced dimension
             nn.ReLU(),               # Non-linear activation
-            nn.Dropout(p=0.3),       # Dropout for regularization
+            nn.Dropout(p=dropout),       # Dropout for regularization
             nn.Linear(128, num_classes)  # Final layer for class logits
         )
 
