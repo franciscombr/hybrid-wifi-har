@@ -1,0 +1,41 @@
+{
+  "os":  "Linux-6.8.0-50-generic-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.12",
+  "startedAt":  "2024-12-30T13:19:53.208597Z",
+  "args":  [
+    "--test_split",
+    "0.2",
+    "--val_split",
+    "0.2",
+    "--batch_size_train",
+    "24",
+    "--batch_size_val",
+    "8"
+  ],
+  "program":  "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/src/resnet/train_utils_resnet.py",
+  "codePath":  "src/resnet/train_utils_resnet.py",
+  "git":  {
+    "remote":  "https://gitlab.inesctec.pt/francisco.m.ribeiro/hybrid-wifi-har.git",
+    "commit":  "ed6340695de6fc1bb817ead6b33909d673300e19"
+  },
+  "email":  "francisco.m.ribeiro@inesctec.pt",
+  "root":  "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/src/resnet",
+  "host":  "ctm-hp-elitebook",
+  "executable":  "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/venv/bin/python3",
+  "codePathLocal":  "train_utils_resnet.py",
+  "cpu_count":  14,
+  "cpu_count_logical":  20,
+  "disk":  {
+    "/":  {
+      "total":  "308495581184",
+      "used":  "144021520384"
+    }
+  },
+  "memory":  {
+    "total":  "33269776384"
+  },
+  "cpu":  {
+    "count":  14,
+    "countLogical":  20
+  }
+}
