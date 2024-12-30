@@ -1,0 +1,44 @@
+{
+  "os":  "Linux-6.8.0-50-generic-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.12",
+  "startedAt":  "2024-12-30T17:22:53.020770Z",
+  "args":  [
+    "--test_split",
+    "0.2",
+    "--val_split",
+    "0.2",
+    "--normalize",
+    "--batch_size_train",
+    "24",
+    "--batch_size_val",
+    "8",
+    "--dataset_root",
+    "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/data/UT_HAR_OG"
+  ],
+  "program":  "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/src/lstm/train_utils_lstm.py",
+  "codePath":  "src/lstm/train_utils_lstm.py",
+  "git":  {
+    "remote":  "https://gitlab.inesctec.pt/francisco.m.ribeiro/hybrid-wifi-har.git",
+    "commit":  "c6f5df7a2df0eb52fb6436b9fd1871308424dcdf"
+  },
+  "email":  "francisco.m.ribeiro@inesctec.pt",
+  "root":  "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/src/lstm",
+  "host":  "ctm-hp-elitebook",
+  "executable":  "/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/venv/bin/python3",
+  "codePathLocal":  "train_utils_lstm.py",
+  "cpu_count":  14,
+  "cpu_count_logical":  20,
+  "disk":  {
+    "/":  {
+      "total":  "308495581184",
+      "used":  "144041525248"
+    }
+  },
+  "memory":  {
+    "total":  "33269776384"
+  },
+  "cpu":  {
+    "count":  14,
+    "countLogical":  20
+  }
+}
