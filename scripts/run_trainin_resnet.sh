@@ -7,4 +7,4 @@
 #SBATCH -e debug_resnet.err       # File containing STDERR output. If ommited, use STDOUT.
 
 # Commands / scripts to run (e.g., python3 train.py)
-python3 ../src/resnet/train_utils_resnet.py --test_split 0.2 --val_split 0.2 --batch_size_train 24 --batch_size_val 8
+python3 ../src/resnet/train_utils_resnet.py --learning_rate 0.0001 --num_epochs 50 --test_split 0.2 --val_split 0.2  --batch_size_train 24 --batch_size_val 8 --dataset_root /nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_OG 
