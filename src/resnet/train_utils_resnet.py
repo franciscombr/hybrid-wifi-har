@@ -236,7 +236,6 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
             loss_fn=loss_fn,
             epoch=epoch + 1,
             dataset_type="Validation",
-            visualize=True
         )
 
         # Log validation metrics to WandB
