@@ -301,7 +301,7 @@ def main(args):
             "arch": "cnn_lstm",
             "amp_output_features": 64,
             "phase_output_features": 64,
-            "lstm_hidden_dim": 256,
+            "lstm_hidden_dim": 512,
             "lstm_num_layers": 4, 
             "bidirectional": True
         },
