@@ -301,8 +301,8 @@ def main(args):
             "arch": "cnn_lstm",
             "amp_output_features": 8,
             "phase_output_features": 8,
-            "lstm_hidden_dim": 64,
-            "lstm_num_layers": 1, 
+            "lstm_hidden_dim": 256,
+            "lstm_num_layers": 3, 
             "bidirectional": True
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
