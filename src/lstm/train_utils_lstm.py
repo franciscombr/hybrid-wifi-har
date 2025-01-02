@@ -298,7 +298,7 @@ def main(args):
             "num_classes": 8,
             "arch": "lstm",
             "hidden_dim": 128,
-            "num_layers": 4,
+            "num_layers": 2,
             "bidirectional": True
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
