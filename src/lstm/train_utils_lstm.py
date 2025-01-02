@@ -297,8 +297,8 @@ def main(args):
             "num_epochs": args.num_epochs,
             "num_classes": 8,
             "arch": "lstm",
-            "hidden_dim": 64,
-            "num_layers": 1,
+            "hidden_dim": 128,
+            "num_layers": 4,
             "bidirectional": True
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
