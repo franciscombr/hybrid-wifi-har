@@ -18,20 +18,20 @@ class CNNLSTMModel(nn.Module):
 
         # Conv1D for amplitude
         self.amp_conv = nn.Sequential(
-            nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=1),
+            nn.Conv1d(1, 32, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=2, stride=2),
-            nn.Conv1d(16, amp_output_features, kernel_size=3, stride=1, padding=1),
+            nn.Conv1d(32, amp_output_features, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=2, stride=2),
         )
         
         # Conv1D for phase
         self.phase_conv = nn.Sequential(
-            nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=1),
+            nn.Conv1d(1, 32, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=2, stride=2),
-            nn.Conv1d(16, phase_output_features, kernel_size=3, stride=1, padding=1),
+            nn.Conv1d(32, phase_output_features, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=2, stride=2),
         )

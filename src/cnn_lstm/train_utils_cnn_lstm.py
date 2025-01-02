@@ -299,10 +299,10 @@ def main(args):
             "num_epochs": args.num_epochs,
             "num_classes": 8,
             "arch": "cnn_lstm",
-            "amp_output_features": 32,
-            "phase_output_features": 32,
-            "lstm_hidden_dim": 64,
-            "lstm_num_layers": 1, 
+            "amp_output_features": 64,
+            "phase_output_features": 64,
+            "lstm_hidden_dim": 128,
+            "lstm_num_layers": 4, 
             "bidirectional": True
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
