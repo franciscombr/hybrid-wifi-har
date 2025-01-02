@@ -302,7 +302,7 @@ def main(args):
             "amp_output_features": 8,
             "phase_output_features": 8,
             "lstm_hidden_dim": 64,
-            "lstm_num_layers": 4, 
+            "lstm_num_layers": 1, 
             "bidirectional": True
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
