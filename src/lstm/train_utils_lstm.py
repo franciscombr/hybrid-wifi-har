@@ -299,7 +299,7 @@ def main(args):
             "arch": "lstm",
             "hidden_dim": 64,
             "num_layers": 1,
-            "bidirectional": False
+            "bidirectional": True
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     )
