@@ -169,11 +169,44 @@ def cvt_to_csi_ratio(data):
         theta_d = np.roll(tensor[:,num_antennas*num_subcarriers:], shift=-num_subcarriers, axis=1)
         theta_d[:,2*num_subcarriers:3*num_subcarriers] = tensor[:,(num_antennas+2)*num_subcarriers:(num_antennas+3)*num_subcarriers]
 
-        proc_data[idx, :, :num_antennas*num_subcarriers] = torch.tensor(np.divide(A_n, A_d, where=A_d!=0))
+        proc_data[idx, :, :num_antennas*num_subcarriers] = torch.tensor(np.divide(np.abs(A_n), np.abs(A_d), out=np.zeros_like(A_n), where=A_d!=0))
         proc_data[idx, :, num_antennas*num_subcarriers:] = torch.tensor(theta_n - theta_d)
 
     return proc_data
 
+
+# PHASE CALIBRATION
+def calibrate_phase(data):
+    proc_data = torch.zeros_like(data)
+    num_antennas = 3
+    num_subcarriers = 30
+
+    for idx, tensor in enumerate(data):
+        phase = tensor[:,num_antennas*num_subcarriers:]
+        difference = torch.zeros_like(tensor[:,0])
+        calibrated_phase = phase.clone()
+
+        for i in range(num_subcarriers*num_antennas):
+            if i%num_subcarriers == 0:
+                  continue
+            temp = phase[:,i] - phase[:,i-1]
+            difference = difference + np.sign(temp) * (np.abs(temp) > np.pi)
+            calibrated_phase[:,i] = phase[:,i] - difference * 2 * np.pi
+
+        for i in range(num_antennas):
+              k = (calibrated_phase[:,i*num_subcarriers +num_subcarriers-1] - calibrated_phase[:,i*num_subcarriers]) / (num_subcarriers-1)
+              b = torch.mean(calibrated_phase[:,i*num_subcarriers:i*num_subcarriers+num_subcarriers], dim=1)
+
+              for j in range(num_subcarriers):
+                    calibrated_phase[:,i*num_subcarriers+j] -= k*j+b 
+
+   
+
+        
+        proc_data[idx, :, :num_antennas*num_subcarriers] = tensor[:,:num_antennas*num_subcarriers]
+        proc_data[idx, :, num_antennas*num_subcarriers:] = calibrated_phase
+
+    return proc_data
 
 
 def main(args):
@@ -186,7 +219,8 @@ def main(args):
     #padded_data, padded_labels = pad_to_3d(data, labels)
 
     csi_ratio_padded_data = cvt_to_csi_ratio(data)
-   
+    
+    calibrated_phase_data = calibrate_phase(data)
     # Save the results to the specified output files
     with h5py.File(args.output_data_path, "w") as f:
         f.create_dataset("X", data=data)
@@ -196,6 +230,11 @@ def main(args):
     with h5py.File(args.output_csi_ratio_data_path, "w") as f:
         f.create_dataset("X", data=csi_ratio_padded_data)
     with h5py.File(args.output_csi_ratio_labels_path, "w") as f:
+        f.create_dataset("y", data=labels)
+    
+    with h5py.File(args.output_calibrated_phase_data_path, "w") as f:
+        f.create_dataset("X", data=calibrated_phase_data)
+    with h5py.File(args.output_calibrated_phase_labels_path, "w") as f:
         f.create_dataset("y", data=labels)
 
 if __name__ == "__main__":
@@ -215,6 +254,11 @@ if __name__ == "__main__":
                         help="Path to save the CSI ratio data (default: ../data/UT_HAR_CSI_RATIO/X.h5).")
     parser.add_argument("--output_csi_ratio_labels_path", type=str, default="../data/UT_HAR_CSI_RATIO/y.h5", 
                         help="Path to save the CSI ratio labels (default: ../data/UT_HAR_CSI_RATIO/y.h5).")
+    parser.add_argument("--output_calibrated_phase_data_path", type=str, default="../data/UT_HAR_CAL_PHASE/X.h5", 
+                        help="Path to save the CSI ratio data (default: ../data/UT_HAR_CAL_PHASE/X.h5).")
+    parser.add_argument("--output_calibrated_phase_labels_path", type=str, default="../data/UT_HAR_CAL_PHASE/y.h5", 
+                        help="Path to save the CSI ratio labels (default: ../data/UT_HAR_CAL_PHASE/y.h5).")
+
 
     # Parse the arguments and call the main function
     args = parser.parse_args()
