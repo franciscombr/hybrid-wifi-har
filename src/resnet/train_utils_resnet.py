@@ -6,7 +6,7 @@ import numpy as np
 import wandb
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
-from src.resnet.resnet_arch01 import CustomResNet18 
+from src.resnet.restnet_arch02 import CustomResNet18 
 
 
 ###############################
@@ -286,7 +286,7 @@ def main(args):
             "optimizer": "NAdam",
             "num_epochs": args.num_epochs,
             "num_classes": 8,
-            "arch": "resnet"
+            "arch": "resnet_a"
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     )
