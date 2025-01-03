@@ -6,7 +6,7 @@ import numpy as np
 import wandb
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
-from src.resnet.restnet_arch01 import CustomResNet18 
+from src.resnet.resnet_arch01 import CustomResNet18 
 
 
 ###############################
