@@ -297,7 +297,7 @@ def main(args):
             "num_epochs": args.num_epochs,
             "num_classes": 8,
             "arch": "lstm",
-            "hidden_dim": 128,
+            "hidden_dim": 256,
             "num_layers": 2,
             "bidirectional": True
         },
