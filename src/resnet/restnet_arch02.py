@@ -29,9 +29,8 @@ class CustomResNet18(nn.Module):
         num_antennas = self.num_antennas
         num_subcarriers = self.num_subcarriers
 
-        amplitudes = x[:,:,:num_antennas*num_subcarriers].unsqueeze(2)
+        amplitudes = x[:,:,:num_antennas*num_subcarriers].unsqueeze(-1)
         phases = x[:,:,num_antennas*num_subcarriers:]
-
         # Resulting shape: [batch_size, time_slices, num_antennas * num_subcarriers, 1]
         #csi_data = torch.stack((amplitudes, phases), dim=-1)
         csi_data = amplitudes 
