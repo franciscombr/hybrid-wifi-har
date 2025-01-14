@@ -130,27 +130,29 @@ def test_epoch(model, device, dataloader, loss_fn, epoch, dataset_type="Validati
     print(f"     >> {dataset_type} loss: {avg_loss:.6f} | acc: {avg_acc:.6f}")
     return avg_loss, avg_acc
 
+def wandb_train_sweep(config=None):
+    with wandb.init(config=config):
+        config = wandb.config
+        print(f"Training with the following configuration:")
+        print(config)
 
-def main(args):
-    # Initialize WandB
-    wandb.init(
-        project="HAR-CSI2",
-        config={
-            "dataset_root": args.dataset_root,
-            "batch_size_train": args.batch_size_train,
-            "batch_size_val": args.batch_size_val,
-            "learning_rate": args.learning_rate,
-            "optimizer": "NAdam",
-            "num_epochs": args.num_epochs,
-            "embedding_dim": args.embedding_dim,
-            "num_heads": 4,
-            "num_encoder_layers": 3,
-            "num_classes": 8,
-        },
-        name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
-    )
-    config = wandb.config  # Access hyperparameters
+        # Access all arguments from config
+        dataset_root = config.dataset_root
+        test_split = config.test_split
+        val_split = config.val_split
+        normalize = config.normalize
+        batch_size_train = config.batch_size_train
+        batch_size_val = config.batch_size_val
+        num_epochs = config.num_epochs
+        embedding_dim = config.embedding_dim
+        learning_rate = config.learning_rate
+        num_encoder_layers = config.num_encoder_layers
+        num_heads = config.num_heads
 
+        train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val, embedding_dim, num_epochs, learning_rate, num_encoder_layers, num_heads ) 
+         
+def train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val, embedding_dim, num_epochs, learning_rate, num_encoder_layers, num_heads ):
+    
     print('\n')
     print('*******************************************************************************')
     print('*                         Training model                                      *')
@@ -163,20 +165,19 @@ def main(args):
     #############################
     #       LOAD DATASET        #
     #############################
-    dataset_root = args.dataset_root
     print(f"  * Dataset path: {dataset_root}")
 
-    train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, args.normalize, args.val_split, args.test_split)
+    train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, normalize, val_split, test_split)
 
     rng_generator = torch.manual_seed(42)
-    train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=args.batch_size_train)
-    val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=args.batch_size_val)
+    train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=batch_size_train)
+    val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
+    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
 
     print(f"[TRAINING]")
-    print(f"    >> Train set samples: {len(train_loader)}. Batch size: {args.batch_size_train}")
+    print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
     print(f"    >> Test set samples: {len(val_loader)}")
-    print(f"    >> Selected data split: {args.val_split}")
+    print(f"    >> Selected data split: {val_split}")
 
     #############################
     #        MODEL CONFIG       #
@@ -189,17 +190,16 @@ def main(args):
     print(f"    >> Training in: {device}")
 
     model = CSI2HARModel(
-        embedding_dim=args.embedding_dim,
-        num_heads=4,
-        num_encoder_layers=3,
-        num_decoder_layers=3,
+        embedding_dim=embedding_dim,
+        num_heads=num_heads,
+        num_encoder_layers=num_encoder_layers,
         num_antennas=3,
         num_subcarriers=30,
         num_time_slices=10,
-        num_classes=8
+        num_classes=8,
     ).to(device)
 
-    learnig_rate = args.learning_rate 
+    learnig_rate = learning_rate 
     optimizer_name = "NAdam"
     optimizer = torch.optim.NAdam(model.parameters(), lr=learnig_rate)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
@@ -207,7 +207,7 @@ def main(args):
 
     print_model_settings(model)
 
-    num_epochs = args.num_epochs  # Set your desired number of epochs
+    num_epochs = num_epochs  # Set your desired number of epochs
     history_da = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': []}
     t0 = time.time()
 
@@ -267,7 +267,7 @@ def main(args):
         print('    >> EPOCH {}/{} \t train loss {:.6f} \t train_acc {:.6f} \t val loss {:.6f} \t val acc {:.6f}'.format(epoch + 1, num_epochs, train_loss, train_acc, val_loss, val_acc))
 
         # Save checkpoint at the end of each epoch
-        model_version = "arch01_v1_002"
+        model_version = "arch02_v1_001"
         if epoch % 10 == 0:
             save_checkpoint(model, optimizer, epoch, val_loss, checkpoint_dir="../results/models/checkpoints/", name_model=model_version)
 
@@ -276,13 +276,48 @@ def main(args):
         # Saving the model.
     save_model = True
     if save_model:
-        model_version = "arch01_v1_002"
+        model_version = "arch01_v2_001"
         day_model = "091024"
         torch.save(model.state_dict(), f"../results/models/hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
         print(f" >> Model saved with name: hybrid_har_model_{day_model}{model_version}_ep{num_epochs}_lr{learnig_rate}_{optimizer_name}.pth")
 
     print(f"Total training time: {(time.time() - t0) / 60:.2f} minutes")
 
+def main(args):
+    # Initialize WandB
+    wandb.init(
+        project="HAR-CSI2",
+        config={
+            "dataset_root": args.dataset_root,
+            "batch_size_train": args.batch_size_train,
+            "batch_size_val": args.batch_size_val,
+            "learning_rate": args.learning_rate,
+            "optimizer": "NAdam",
+            "num_epochs": args.num_epochs,
+            "embedding_dim": args.embedding_dim,
+            "num_heads": 4,
+            "num_encoder_layers": args.num_encoder_layers,
+            "num_classes": 8,
+            "arch": 2
+        },
+        name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    )
+    config = wandb.config  # Access hyperparameters
+
+    # Access all arguments from config
+    dataset_root = config.dataset_root
+    test_split = config.test_split
+    val_split = config.val_split
+    normalize = config.normalize
+    batch_size_train = config.batch_size_train
+    batch_size_val = config.batch_size_val
+    num_epochs = config.num_epochs
+    embedding_dim = config.embedding_dim
+    learning_rate = config.learning_rate
+    num_encoder_layers = config.num_encoder_layers
+
+    train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val, embedding_dim, num_epochs, learning_rate, num_encoder_layers) 
+   
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train the model in the HAR dataset.")
@@ -303,6 +338,8 @@ if __name__ == '__main__':
                         help="Choose number of epochs for model training")
     parser.add_argument("--embedding_dim", type=int, default=256)    
     parser.add_argument("--learning_rate", type=float, default=1e-4 )
+    parser.add_argument("--num_encoder_layers", type=int, default=3)
     args = parser.parse_args()
     
     main(args)
+

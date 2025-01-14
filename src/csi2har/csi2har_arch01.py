@@ -43,9 +43,11 @@ class CSI2HARModel(nn.Module):
 
         self.encoder = TransformerEncoder(embedding_dim, num_heads, num_encoder_layers)
 
-        self.classification_head = nn.Sequential(
+        self.prep_linear = nn.Sequential(
             nn.AdaptiveAvgPool1d(1),
-            nn.Flatten(),
+            nn.Flatten()
+        )
+        self.classification_head = nn.Sequential(
             nn.Linear(embedding_dim,num_classes)
         )
 
@@ -103,7 +105,8 @@ class CSI2HARModel(nn.Module):
         # Classification head
         # Permute to [batch_size, embedding_dim, num_features] for pooling
         encoder_output = encoder_output.permute(0, 2, 1)
-        class_logits = self.classification_head(encoder_output)  # Shape: [batch_size, num_classes]
+        linear_input = self.prep_linear(encoder_output)
+        class_logits = self.classification_head(linear_input) # Shape: [batch_size, num_classes]
 
         return class_logits
 

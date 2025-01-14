@@ -34,7 +34,8 @@ class CustomResNet18(nn.Module):
 
         # Resulting shape: [batch_size, time_slices, num_antennas * num_subcarriers, 2]
         csi_data = torch.stack((amplitudes, phases), dim=-1)
-
+        
+        # Resulting shape: [batch_size, 2, num_antennas*num_subcarriers, time_slices]
         csi_data = csi_data.permute(0,3,2,1)
         # Forward through ResNet18
         return self.resnet18(csi_data)   
