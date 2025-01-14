@@ -24,7 +24,7 @@ def save_checkpoint(model, optimizer, epoch, loss, checkpoint_dir, name_model="d
     :param loss: Loss value at this epoch.
     :param checkpoint_dir: Directory to save checkpoints.
     """
-    checkpoint_path = f"{checkpoint_dir}checkpoint_epoch_{epoch + 1}_{name_model}.pth"
+    checkpoint_path = f"{checkpoint_dir}{name_model}.pth"
     torch.save({
         'epoch': epoch + 1,
         'model_state_dict': model.state_dict(),
