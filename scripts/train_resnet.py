@@ -1,5 +1,5 @@
 import wandb 
-from src.lstm.train_utils_lstm import wandb_train_sweep 
+from src.resnet.train_utils_resnet import wandb_train_sweep 
 
 if __name__ == '__main__':
     sweep_id = "uwuer8b7"
