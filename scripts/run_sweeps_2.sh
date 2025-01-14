@@ -7,7 +7,7 @@
 #SBATCH -e logs/sweep_2.err       # File containing STDERR output. If ommited, use STDOUT.
 
 # Commands / scripts to run (e.g., python3 train.py)
-python3 train_csi4har.py
-python3 train_resnet.py
-python3 train_lstm.py
 python3 train_cnn_lstm.py
+python3 train_lstm.py
+python3 train_resnet.py
+python3 train_csi4har.py
