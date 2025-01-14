@@ -148,8 +148,8 @@ def wandb_train_sweep(config=None):
         learning_rate = config.learning_rate
         amp_output_features = config.amp_output_features
         phase_output_features = config.phase_output_features
-        lstm_hidden_dim = lstm_hidden_dim
-        lstm_num_layers = lstm_num_layers
+        lstm_hidden_dim = config.lstm_hidden_dim
+        lstm_num_layers = config.lstm_num_layers
         bidirectional = config.bidirectional
 
         train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate, amp_output_features, phase_output_features, lstm_hidden_dim, lstm_num_layers, bidirectional)

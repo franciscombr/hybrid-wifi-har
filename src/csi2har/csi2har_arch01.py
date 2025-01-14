@@ -26,7 +26,7 @@ class TemporalEncoder(nn.Module):
     
 
 class CSI2HARModel(nn.Module):
-    def __init__(self, embedding_dim, num_heads, num_encoder_layers, num_decoder_layers, 
+    def __init__(self, embedding_dim, num_heads, num_encoder_layers,  
                  num_antennas=3, num_subcarriers=30, num_time_slices=10, num_classes=8):
         super(CSI2HARModel, self).__init__()
         self.embedding_dim = embedding_dim
