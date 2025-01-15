@@ -8,6 +8,8 @@ import wandb
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from src.resnet.resnet_arch01 import CustomResNet18 
 
+from itertools import chain
+
 
 ###############################
 #
@@ -139,10 +141,11 @@ def wandb_train_sweep(config=None):
         batch_size_val = config.batch_size_val
         num_epochs = config.num_epochs
         learning_rate = config.learning_rate
+        train_full = config.train_full
 
-        train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate)
+        train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate, train_full)
          
-def train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate):
+def train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate, train_full):
 
     print('\n')
     print('*******************************************************************************')
@@ -158,6 +161,7 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
     #############################
     print(f"  * Dataset path: {dataset_root}")
 
+        
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, normalize, val_split, test_split)
 
     rng_generator = torch.manual_seed(42)
@@ -165,6 +169,9 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
     val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
     test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
 
+    if train_full == True:
+        train_loader = chain(train_loader, val_loader)
+        val_loader = test_loader
     print(f"[TRAINING]")
     print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
     print(f"    >> Test set samples: {len(val_loader)}")
@@ -297,7 +304,8 @@ def main(args):
             "optimizer": "NAdam",
             "num_epochs": args.num_epochs,
             "num_classes": 8,
-            "arch": "resnet"
+            "arch": "resnet",
+            "train_full": args.train_full,
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     )
@@ -312,8 +320,9 @@ def main(args):
     batch_size_val = config.batch_size_val
     num_epochs = config.num_epochs
     learning_rate = config.learning_rate
+    train_full = config.train_full
 
-    train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate)
+    train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val,  num_epochs, learning_rate, train_full)
    
 
 if __name__ == '__main__':
@@ -334,6 +343,7 @@ if __name__ == '__main__':
     parser.add_argument("--num_epochs", type=int, default=30, 
                         help="Choose number of epochs for model training")
     parser.add_argument("--learning_rate", type=float, default=1e-4 )
+    parser.add_argument("--train_full", action="store_true", required=True)
     args = parser.parse_args()
     
     main(args)
