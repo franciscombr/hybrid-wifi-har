@@ -8,6 +8,7 @@ import wandb
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from src.lstm.lstm_arch01 import LSTMBasedModel 
+from torch.utils.data import ConcatDataset
 
 
 ###############################
@@ -167,11 +168,14 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
     print(f"  * Dataset path: {dataset_root}")
 
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, normalize, val_split, test_split)
+    train_full = True
+    if train_full == True:
+        train_dataset = ConcatDataset([train_dataset, val_dataset])
+        val_dataset = test_dataset
 
     rng_generator = torch.manual_seed(42)
     train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=batch_size_train)
     val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
 
     print(f"[TRAINING]")
     print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
