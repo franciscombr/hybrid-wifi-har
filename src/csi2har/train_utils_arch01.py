@@ -305,6 +305,9 @@ def main(args):
         project="HAR-CSI2",
         config={
             "dataset_root": args.dataset_root,
+            "test_split": args.test_split,
+            "val_split": args.val_split,
+            "normalize": args.normalize
             "batch_size_train": 16,
             "batch_size_val": args.batch_size_val,
             "learning_rate": args.learning_rate,
@@ -331,8 +334,10 @@ def main(args):
     embedding_dim = config.embedding_dim
     learning_rate = config.learning_rate
     num_encoder_layers = config.num_encoder_layers
+    num_heads = config.num_heads
 
-    train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val, embedding_dim, num_epochs, learning_rate, num_encoder_layers) 
+    train_test(dataset_root, normalize, val_split, test_split, batch_size_train, batch_size_val, embedding_dim, num_epochs, learning_rate, num_encoder_layers, num_heads ) 
+
    
 
 if __name__ == '__main__':
