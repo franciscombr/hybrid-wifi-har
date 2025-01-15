@@ -4,6 +4,7 @@ import torch
 import time
 import numpy as np
 import wandb
+from torch.utils.data import ConcatDataset
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from src.resnet.resnet_arch01 import CustomResNet18 
@@ -163,15 +164,14 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
 
         
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, normalize, val_split, test_split)
+    if train_full == True:
+        train_dataset = ConcatDataset([train_dataset, val_dataset])
+        val_dataset = test_dataset
 
     rng_generator = torch.manual_seed(42)
     train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=batch_size_train)
     val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
 
-    if train_full == True:
-        train_loader = chain(train_loader, val_loader)
-        val_loader = test_loader
     print(f"[TRAINING]")
     #print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
     #print(f"    >> Test set samples: {len(val_loader)}")
