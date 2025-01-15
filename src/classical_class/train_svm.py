@@ -60,4 +60,4 @@ def extract_features(model, data_loader):
     
 # Extract features from the second-to-last layer
 X_train_features = extract_features(model, train_loader).cpu().numpy()
-X_test_features = extract_features(model, test_loader).cpu().numpy()
+X_test_features = extract_features(model, val_loader).cpu().numpy()
