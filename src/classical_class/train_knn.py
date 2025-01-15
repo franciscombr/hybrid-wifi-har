@@ -11,7 +11,7 @@ from src.ut_har.ut_har import make_dataset, make_dataloader
 from torch.utils.data import ConcatDataset
 
 # Load the model and checkpoint
-checkpoint_path = "../../results/models/checkpoints/best_model_CSI2HAR_2025-01-15_14-32-03_ypynpyx2.pth"
+checkpoint_path = "../../results/models/checkpoints/best_model_floral-sweep-12_fo8dpz19.pth"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = CustomResNet18(
@@ -70,28 +70,13 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train_features)
 X_test_scaled = scaler.transform(X_test_features)
 
-# Train the SVM classifier
-svm_classifier = LinearSVC( random_state=42, multi_class="crammer_singer")
-svm_classifier.fit(X_train_scaled, y_train_labels)
-
-# Evaluate the classifier
-y_pred = svm_classifier.predict(X_test_scaled)
-print("SVM Classification Report:")
-print(classification_report(y_test_labels, y_pred))
-print(f"Accuracy: {accuracy_score(y_test_labels, y_pred):.2f}")
-
-# Train and evaluate Naive Bayes classifier
-nb_classifier = GaussianNB()
-nb_classifier.fit(X_train_scaled, y_train_labels)
-y_pred_nb = nb_classifier.predict(X_test_scaled)
-print("Naive Bayes Classification Report:")
-print(classification_report(y_test_labels, y_pred_nb))
-print(f"Naive Bayes Accuracy: {accuracy_score(y_test_labels, y_pred_nb):.2f}")
-
+k_values = range(5, 10)
+scores = []
 # Train and evaluate K-Nearest Neighbors classifier
-knn_classifier = KNeighborsClassifier(n_neighbors=5)
-knn_classifier.fit(X_train_scaled, y_train_labels)
-y_pred_knn = knn_classifier.predict(X_test_scaled)
-print("K-Nearest Neighbors Classification Report:")
-print(classification_report(y_test_labels, y_pred_knn))
-print(f"K-Nearest Neighbors Accuracy: {accuracy_score(y_test_labels, y_pred_knn):.2f}")
+for k in k_values:
+    knn_classifier = KNeighborsClassifier(n_neighbors=k)
+    knn_classifier.fit(X_train_scaled, y_train_labels)
+    y_pred_knn = knn_classifier.predict(X_test_scaled)
+    print(f"{k}-Nearest Neighbors Classification Report:")
+    print(classification_report(y_test_labels, y_pred_knn))
+    print(f"{k}-Nearest Neighbors Accuracy: {accuracy_score(y_test_labels, y_pred_knn):.2f}")
