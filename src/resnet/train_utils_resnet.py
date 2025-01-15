@@ -173,9 +173,9 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
         train_loader = chain(train_loader, val_loader)
         val_loader = test_loader
     print(f"[TRAINING]")
-    print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
-    print(f"    >> Test set samples: {len(val_loader)}")
-    print(f"    >> Selected data split: {val_split}")
+    #print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
+    #print(f"    >> Test set samples: {len(val_loader)}")
+    #print(f"    >> Selected data split: {val_split}")
 
     #############################
     #        MODEL CONFIG       #
