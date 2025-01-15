@@ -7,6 +7,7 @@ import wandb
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from src.csi2har.csi2har_arch01 import CSI2HARModel
+from torch.utils.data import ConcatDataset
 
 
 ###############################
@@ -168,11 +169,15 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
     print(f"  * Dataset path: {dataset_root}")
 
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, normalize, val_split, test_split)
+    train_full = True
+    if train_full == True:
+        train_dataset = ConcatDataset([train_dataset, val_dataset])
+        val_dataset = test_dataset
 
     rng_generator = torch.manual_seed(42)
     train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=batch_size_train)
     val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
+
 
     print(f"[TRAINING]")
     print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
@@ -300,16 +305,16 @@ def main(args):
         project="HAR-CSI2",
         config={
             "dataset_root": args.dataset_root,
-            "batch_size_train": args.batch_size_train,
+            "batch_size_train": 16,
             "batch_size_val": args.batch_size_val,
             "learning_rate": args.learning_rate,
             "optimizer": "NAdam",
             "num_epochs": args.num_epochs,
-            "embedding_dim": args.embedding_dim,
-            "num_heads": 4,
-            "num_encoder_layers": args.num_encoder_layers,
+            "embedding_dim": 128,
+            "num_heads": 8,
+            "num_encoder_layers": 8,
             "num_classes": 8,
-            "arch": 2
+            "arch": 'csi4har',
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     )

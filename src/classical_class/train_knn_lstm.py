@@ -31,8 +31,8 @@ model.load_state_dict(checkpoint['model_state_dict'])
 model.eval()  # Set the model to evaluation mode
 model.fc = torch.nn.Identity()
 
-dataset_root = '/nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_CAL_PHASE' 
-#dataset_root = '/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/data/UT_HAR_CAL_PHASE' #'/nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_CAL_PHASE' 
+#dataset_root = '/nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_CAL_PHASE' 
+dataset_root = '/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/data/UT_HAR_CAL_PHASE' #'/nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_CAL_PHASE' 
 normalize = True
 val_split = 0.2
 test_split = 0.2

@@ -8,6 +8,7 @@ import wandb
 
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from src.cnn_lstm.cnn_lstm_arch01 import CNNLSTMModel 
+from torch.utils.data import ConcatDataset
 
 
 ###############################
@@ -171,11 +172,14 @@ def train_test(dataset_root, normalize, val_split, test_split, batch_size_train,
     print(f"  * Dataset path: {dataset_root}")
 
     train_dataset, val_dataset, test_dataset = make_dataset(dataset_root, normalize, val_split, test_split)
+    train_full = True 
+    if train_full == True:
+        train_dataset = ConcatDataset([train_dataset, val_dataset])
+        val_dataset = test_dataset
 
     rng_generator = torch.manual_seed(42)
     train_loader = make_dataloader(train_dataset, is_training=True, generator=rng_generator,batch_size=batch_size_train)
     val_loader = make_dataloader(val_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
-    test_loader = make_dataloader(test_dataset, is_training=False, generator=rng_generator, batch_size=batch_size_val)
 
     print(f"[TRAINING]")
     print(f"    >> Train set samples: {len(train_loader)}. Batch size: {batch_size_train}")
@@ -311,10 +315,10 @@ def main(args):
             "num_epochs": args.num_epochs,
             "num_classes": 8,
             "arch": "cnn_lstm",
-            "amp_output_features": 64,
-            "phase_output_features": 64,
-            "lstm_hidden_dim": 512,
-            "lstm_num_layers": 4, 
+            "amp_output_features": 128,
+            "phase_output_features": 128,
+            "lstm_hidden_dim": 128,
+            "lstm_num_layers": 2, 
             "bidirectional": False
         },
         name=f"CSI2HAR_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
