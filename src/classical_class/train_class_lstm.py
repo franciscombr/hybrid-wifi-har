@@ -6,26 +6,30 @@ from sklearn.metrics import classification_report, accuracy_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import numpy as np
-from src.resnet.resnet_arch01 import CustomResNet18  # Import the model class
+from src.lstm.lstm_arch01 import LSTMBasedModel
 from src.ut_har.ut_har import make_dataset, make_dataloader
 from torch.utils.data import ConcatDataset
 from src.eval.gen_confusion_matrices import plot_confusion_matrix
 
 # Load the model and checkpoint
-checkpoint_path = "../../results/models/checkpoints/best_model_CSI2HAR_2025-01-15_14-32-03_ypynpyx2.pth"
+checkpoint_path = "../../results/models/checkpoints/best_model_CSI2HAR_2025-01-15_15-18-09_6ggpb683.pth"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model = CustomResNet18(
-    num_antennas=3,
-    num_subcarriers=30,
-    num_time_slices=10,
-    num_classes=8,
-).to(device)
+model = LSTMBasedModel(
+        num_antennas=3,
+        num_subcarriers=30,
+        num_time_slices=10,
+        num_classes=8,
+        hidden_dim=256,
+        num_layers=2,
+        bidirectional=True,
+    ).to(device)
+
 
 checkpoint = torch.load(checkpoint_path, map_location=device)
 model.load_state_dict(checkpoint['model_state_dict'])
 model.eval()  # Set the model to evaluation mode
-model.resnet18.fc = torch.nn.Identity()
+model.fc = torch.nn.Identity()
 
 dataset_root = '/nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_CAL_PHASE' 
 #dataset_root = '/home/francisco.m.ribeiro/PDEEC/ML/Project/hybrid-wifi-har/data/UT_HAR_CAL_PHASE' #'/nas-ctm01/datasets/public/CSI-HAR/Dataset/UT_HAR_CAL_PHASE' 
